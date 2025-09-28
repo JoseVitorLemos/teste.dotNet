@@ -1,9 +1,7 @@
 ﻿using Library.Shared.Responses;
 using FluentValidation;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System.Net;
 using System.Text.Json;
 

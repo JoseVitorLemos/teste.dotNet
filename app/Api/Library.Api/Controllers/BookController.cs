@@ -1,10 +1,13 @@
+using Library.Application.Common.Paged;
 using Library.Application.MediatR.Books.Commands.Create;
 using Library.Application.MediatR.Books.Commands.Delete;
 using Library.Application.MediatR.Books.Commands.Update;
 using Library.Application.MediatR.Books.Queries.GetAll;
+using Library.Shared.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Library.Api.Controllers;
 
@@ -33,6 +36,13 @@ public class BookController(IMediator mediator) : ControllerBase
     /// </returns>
     [HttpGet]
     [AllowAnonymous]
+    [SwaggerOperation(
+        Summary = "Lista todos os livros cadastrados na Livraria",
+        Description = "Retorna uma lista paginada de livros com suporte a filtros por nome e ordenação. " +
+                      "Parâmetros suportados: **Page**, **PageSize**, **OrderBy** e **Name**."
+    )]
+    [ProducesResponseType(typeof(PagedResult<BooksGetAllResult>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetAll([FromQuery] BooksGetAllQuery query)
         => Ok(await _mediator.Send(query));
 
@@ -51,6 +61,9 @@ public class BookController(IMediator mediator) : ControllerBase
     /// </returns>
     [HttpPost]
     [Authorize("Administrator")]
+    [ProducesResponseType(typeof(BookCreateResult), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Create([FromBody] BookCreateCommand command)
     {
         var result = await _mediator.Send(command);
@@ -69,10 +82,13 @@ public class BookController(IMediator mediator) : ControllerBase
     /// </param>
     /// <returns>
     /// Retorna um <see cref="NoContentResult"/>.
-    /// Não possui um objeto retornado.
+    /// Não possui um objeto retornado quando obtem successo.
     /// </returns>
     [HttpPut]
     [Authorize("Administrator")]
+    [ProducesResponseType(typeof(Unit), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Update([FromBody] BookUpdateCommand command)
     {
         var result = await _mediator.Send(command);
@@ -82,19 +98,19 @@ public class BookController(IMediator mediator) : ControllerBase
     /// <summary>
     /// Exclui um livro existente
     /// </summary>
-    /// <param name="command">
-    /// Objeto contendo os dados necessários para atualziar um livro,
-    /// incluindo <see cref="BookUpdateCommand.Id"/>, 
-    /// <see cref="BookUpdateCommand.Name"/> e 
-    /// <see cref="BookUpdateCommand.Author"/>.
-    /// <see cref="BookUpdateCommand.Summary"/>.
+    /// <param name="id">
+    /// Objeto contendo os dados necessários para remover um livro,
+    /// <see cref="BookUpdateCommand.Id"/>
     /// </param>
     /// <returns>
     /// Retorna um <see cref="NoContentResult"/>.
-    /// Não possui um objeto retornado.
+    /// Não possui um objeto retornado quando obtem successo.
     /// </returns>
     [HttpDelete("{id}")]
     [Authorize("Administrator")]
+    [ProducesResponseType(typeof(Unit), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Delete([FromRoute] string id)
     {
         await _mediator.Send(new BookDeleteCommand(id));

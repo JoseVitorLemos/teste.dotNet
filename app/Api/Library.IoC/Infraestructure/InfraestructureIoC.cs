@@ -25,8 +25,7 @@ public static class InfraestructureIoC
     public static IServiceCollection AddDataContext(this IServiceCollection services)
     {
         services.AddDbContext<DataContext>(options =>
-                options.UseSqlServer(CustomConfiguration.ConnectionStrings.DefaultConnection,
-                    x => x.MigrationsAssembly(typeof(DataContext).Assembly.FullName)));
+                options.UseSqlServer(CustomConfiguration.ConnectionStrings.DefaultConnection));
 
         return services;
     }

@@ -1,5 +1,4 @@
 ﻿using Serilog;
-using Library.Shared.Middlewares;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Library.IoC.Shared;
@@ -8,7 +7,6 @@ public static class SharedIoc
 {
     public static IServiceCollection AddShared(this IServiceCollection services)
     {
-        services.AddTransient<GlobalExceptionHandling>();
         AddLogs(services);
         return services;
     }

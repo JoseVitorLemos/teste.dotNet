@@ -1,15 +1,12 @@
 ﻿using Audit.Core;
 using Audit.EntityFramework;
 using Library.Domain.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Infraestructure.AppDbContext;
 
-public class DataContext(DbContextOptions<DataContext> options, IHttpContextAccessor httpContextAccessor) : AuditDbContext(options)
+public class DataContext(DbContextOptions<DataContext> options) : AuditDbContext(options)
 {
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-
     public DbSet<Book> Books { get; set; }
     public DbSet<Login> Users { get; set; }
     public DbSet<AuditLog> AuditLog { get; set; }

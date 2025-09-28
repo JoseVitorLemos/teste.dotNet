@@ -1,11 +1,9 @@
+using MediatR;
+using Library.Shared.Responses;
+using Microsoft.AspNetCore.Mvc;
 using Library.Application.MediatR.Authenticate.Commands.SignIn;
 using Library.Application.MediatR.Authenticate.Commands.SignUp;
-using Library.Application.MediatR.Books.Commands.Create;
-using Library.Application.MediatR.Books.Commands.Delete;
-using Library.Application.MediatR.Books.Commands.Update;
-using Library.Application.MediatR.Books.Queries.GetAll;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
+using SignInResult = Library.Application.MediatR.Authenticate.Commands.SignIn.SignInResult;
 
 namespace Library.Api.Controllers;
 
@@ -16,40 +14,42 @@ public class AuthenticateController(IMediator mediator) : ControllerBase
     private readonly IMediator _mediator = mediator;
 
     /// <summary>
-    /// Lista todos os livros cadastrados na Library.
+    /// Realiza o login no sistema, para acessar os endpoints com nível de acesso administrador.
     /// </summary>
-    /// <param name="query">
-    /// Parâmetros de consulta para paginação e filtro:
-    /// <list type="bullet">
-    /// <item><description><c>Page</c> – número da página (padrão: 1).</description></item>
-    /// <item><description><c>PageSize</c> – quantidade de registros por página (padrão: 50).</description></item>
-    /// <item><description><c>OrderBy</c> – ordenação dos resultados ("asc" ou "desc").</description></item>
-    /// <item><description><c>Name</c> – filtro opcional pelo nome do livro.</description></item>
-    /// </list>
-    /// </param>
+    /// <see cref="SignInCommand.UserName"/>
+    /// Parâmetros para autenticar o usuário por nome uo email cadastrado
+    /// <see cref="SignInCommand.Password"/>
+    /// Senha do usuário cadastrado
     /// <returns>
     /// Retorna um <see cref="OkObjectResult"/> contendo um objeto do tipo 
-    /// <see cref="PagedResult{BooksGetAllResult}"/> com os dados paginados dos livros,
-    /// incluindo informações de total de registros e número de páginas.
+    /// <see cref="SignInResult"/> Irá retornar o token caso o userName/Login 
+    /// e password sejam válidos.
     /// </returns>
     [HttpPost("SignIn")]
+    [ProducesResponseType(typeof(SignInResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> SignIn([FromBody] SignInCommand query)
         => Ok(await _mediator.Send(query));
 
     /// <summary>
-    /// Cadastrar um novo livro na Library.
+    /// Realiza o cadastro para o usuário Administrador do sistema
     /// </summary>
-    /// <param name="command">
-    /// Objeto contendo os dados necessários para criar o livro,
-    /// incluindo <see cref="BookCreateCommand.Name"/>, 
-    /// <see cref="BookCreateCommand.Author"/> e 
-    /// <see cref="BookCreateCommand.Summary"/>.
-    /// </param>
+    /// <see cref="SignUpCommand.UserName"/>
+    /// Parâmetros que representa o Nome do usuário no sistema.
+    /// <see cref="SignUpCommand.Email"/>
+    /// Parâmetros que representa o Email do usuário no sistema
+    /// <see cref="SignUpCommand.Password"/>
+    /// Senha do usuário que será cadastrado.
     /// <returns>
-    /// Retorna um <see cref="CreatedAtActionResult"/>.
-    /// O objeto retornado contém o identificador único do livro.
+    /// Retorna um <see cref="OkObjectResult"/> contendo um objeto do tipo 
+    /// <see cref="SignUpResult"/> Irá retornar o token caso registre
+    /// o usuário com sucesso.
     /// </returns>
     [HttpPost("SignUp")]
+    [ProducesResponseType(typeof(SignUpResult), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> SignUp([FromBody] SignUpCommand command)
         => CreatedAtAction(nameof(SignUp), await _mediator.Send(command));
 }

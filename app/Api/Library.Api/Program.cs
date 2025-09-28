@@ -1,9 +1,10 @@
+using Serilog;
+using Library.IoC.Shared;
+using Library.IoC.Api.Swagger;
 using Library.IoC.Application;
 using Library.IoC.CrossCutting;
 using Library.IoC.Infraestructure;
-using Library.IoC.Shared;
 using Library.Shared.Middlewares;
-using Serilog;
 
 internal class Program
 {
@@ -13,6 +14,7 @@ internal class Program
 
         IServiceCollection services = builder.Services;
 
+        services.AddApiServices();
         services.AddApplication();
         services.AddCrossCutting();
         services.AddInfraestruucture();
@@ -38,6 +40,8 @@ internal class Program
         app.UseAuthorization();
 
         app.MapControllers();
+
+        app.UseCors("AllowAllOrigins");
 
         app.Run();
     }
