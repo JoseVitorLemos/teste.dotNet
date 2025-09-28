@@ -33,6 +33,8 @@ public static class InfraestructureIoC
 
     private static void AuditLogsConfiguration()
     {
+        IgnoreSensitivyProperties();
+
         Audit.Core.Configuration.DataProvider = new SqlDataProvider()
         {
             ConnectionString = CustomConfiguration.ConnectionStrings.DefaultConnection,
@@ -47,5 +49,14 @@ public static class InfraestructureIoC
                 new CustomColumn("CREATED_AT", ev => DateTime.UtcNow)
             }
         };
+    }
+
+    private static void IgnoreSensitivyProperties()
+    {
+        Audit.EntityFramework.Configuration.Setup()
+            .ForContext<DataContext>(config => config
+                .ForEntity<Login>(entity => entity
+                    .Ignore(x => x.PasswordHash)
+        ));
     }
 }
