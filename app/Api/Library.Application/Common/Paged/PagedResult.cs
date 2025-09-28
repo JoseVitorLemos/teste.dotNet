@@ -1,6 +1,4 @@
-﻿using Swashbuckle.AspNetCore.Annotations;
-
-namespace Library.Application.Common.Paged;
+﻿namespace Library.Application.Common.Paged;
 
 public class PagedResult<T>
 {

@@ -19,9 +19,6 @@ internal class Program
         services.AddCrossCutting();
         services.AddInfraestruucture();
         services.AddShared();
-        services.AddControllers();
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
 
         builder.Host.UseSerilog();
 
