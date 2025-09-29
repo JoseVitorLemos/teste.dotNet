@@ -47,8 +47,6 @@ public static class ApiServices
                     Version = description.ApiVersion.ToString()
                 });
             }
-
-            opt.EnableAnnotations();
         });
 
         services.AddControllers();

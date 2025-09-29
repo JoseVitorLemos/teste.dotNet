@@ -1,9 +1,9 @@
 ﻿using System.Linq.Expressions;
-using Library.Domain.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using Library.Domain.Entities.Base;
-using Library.Infraestructure.AppDbContext;
 using Library.Domain.Messages;
+using Library.Domain.Interfaces;
+using Library.Domain.Entities.Base;
+using Microsoft.EntityFrameworkCore;
+using Library.Infraestructure.AppDbContext;
 
 namespace Library.Infraestructure.Repositories;
 
@@ -18,18 +18,19 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         _dbContext = dbContext;
     }
 
-    public async Task<T> Insert(T entity)
+    public async Task<T> Insert(T entity, CancellationToken cancellation)
     {
-        await _dbSet.AddAsync(entity);
-        await _dbContext.SaveChangesAsync();
+        await _dbSet.AddAsync(entity, cancellation);
+        await _dbContext.SaveChangesAsync(cancellation);
         return entity;
     }
 
-    public async Task<T> GetById(Guid id)
+    public async Task<T> GetById(Guid id, CancellationToken cancellation)
     {
         var entity = await _dbSet
-            .AsNoTracking().AsQueryable()
-            .FirstOrDefaultAsync(e => e.Id == id);
+            .AsQueryable()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(e => e.Id == id, cancellation);
 
         return entity!;
     }
@@ -39,7 +40,8 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         bool paginate = true,
         int page = 1,
         int pageSize = 10,
-        string orderBy = "desc")
+        string orderBy = "desc",
+        CancellationToken? cancellation = null)
     {
         var query = _dbSet.AsQueryable();
 
@@ -56,42 +58,47 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
             query = query.Where(filter)
                          .AsNoTracking();
 
-        return await query.ToListAsync();
+        return await query.ToListAsync(cancellation ?? CancellationToken.None);
     }
 
-    public async Task<int> Count(Expression<Func<T, bool>> filter = null!)
+    public async Task<int> Count(
+        Expression<Func<T, bool>> filter = null!,
+        CancellationToken? cancellation = null)
     {
+        var cancellationToken = cancellation ?? CancellationToken.None;
         if (filter != null)
-            return await _dbSet.CountAsync(filter);
+            return await _dbSet.CountAsync(filter, cancellationToken);
 
-        return await _dbSet.CountAsync();
+        return await _dbSet.CountAsync(cancellationToken);
     }
 
-    public async Task<T> FindOne(Expression<Func<T, bool>> filter)
+    public async Task<T> FindOne(
+        Expression<Func<T, bool>> filter,
+        CancellationToken cancellation)
     {
         var entity = await _dbSet.AsQueryable()
             .AsNoTracking()
             .AsQueryable()
-            .FirstOrDefaultAsync(filter);
+            .FirstOrDefaultAsync(filter, cancellation);
 
         return entity!;
     }
 
-    public async Task<T> Update(T entity)
+    public async Task<T> Update(T entity, CancellationToken cancellation)
     {
         _dbSet.Update(entity);
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync(cancellation);
         return entity;
     }
 
-    public async Task Delete(Guid id)
+    public async Task Delete(Guid id, CancellationToken cancellation)
     {
-        var entity = await GetById(id);
+        var entity = await GetById(id, cancellation);
 
         if (entity is null)
             throw new ArgumentException(string.Format(EntityMessages.EMPTY, typeof(T).Name, $"id {id}"));
 
         _dbSet.Remove(entity);
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync(cancellation);
     }
 }

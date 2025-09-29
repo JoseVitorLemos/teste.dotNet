@@ -1,11 +1,12 @@
 ﻿using FluentValidation;
 using Library.Shared.Messages;
+using Library.Shared.Validators;
 
-namespace Library.Application.MediatR.Books.Commands.Create;
+namespace Library.Application.MediatR.Books.Commands.Update;
 
-public class BookCreateValidator : AbstractValidator<BookCreateCommand>
+public class BookUpdateValidator : AbstractValidator<BookUpdateCommand>
 {
-    public BookCreateValidator()
+    public BookUpdateValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty()

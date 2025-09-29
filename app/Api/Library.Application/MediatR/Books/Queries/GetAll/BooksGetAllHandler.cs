@@ -17,9 +17,10 @@ public class BooksGetAllHandler(IBookRepository bookRepository) : IRequestHandle
                 : x.Active),
             page: query.Page!.Value,
             pageSize: query.PageSaze!.Value,
-            orderBy: query.OrderBy);
+            orderBy: query.OrderBy,
+            cancellation: cancellationToken);
 
-        var booksTotalCount = await _bookRepository.Count();
+        var booksTotalCount = await _bookRepository.Count(cancellation: cancellationToken);
 
         return books.MapToResult(booksTotalCount, query.Page, query.PageSaze);
     }

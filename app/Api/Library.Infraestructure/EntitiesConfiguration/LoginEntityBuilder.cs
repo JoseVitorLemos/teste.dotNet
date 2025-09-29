@@ -18,7 +18,7 @@ public class LoginEntityBuilder : IEntityTypeConfiguration<Login>
         builder.Property(x => x.Email).HasColumnName("EMAIL").IsRequired();
         builder.HasIndex(x => x.Email).IsUnique();
         builder.Property(x => x.PasswordHash).HasColumnName("PASSWORD_HASH").HasMaxLength(60).IsRequired();
-        builder.Property(x => x.Role).HasColumnName("ROLE").HasMaxLength(10).IsRequired();
+        builder.Property(x => x.Role).HasColumnName("ROLE").IsRequired();
         builder.Property(x => x.Active).HasColumnName("ACTIVE").IsRequired();
         builder.Property(x => x.CreatedAt).HasColumnName("CREATED_AT").IsRequired();
     }

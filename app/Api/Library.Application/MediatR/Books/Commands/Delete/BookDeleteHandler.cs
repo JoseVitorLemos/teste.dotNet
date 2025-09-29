@@ -11,7 +11,7 @@ public class BookDeleteHandler(IBookRepository bookRepository) : IRequestHandler
 
     public async Task<Unit> Handle(BookDeleteCommand command, CancellationToken cancellationToken)
     {
-        await Book.Delete(command.Id.GuidParse(), _bookRepository);
+        await Book.Delete(command.Id.GuidParse(), _bookRepository, cancellationToken);
         return Unit.Value;
     }
 }

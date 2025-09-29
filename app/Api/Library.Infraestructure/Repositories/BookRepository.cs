@@ -2,21 +2,18 @@
 using Library.Domain.Entities;
 using Library.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Library.Domain.Entities.Base;
 using Library.Infraestructure.AppDbContext;
 
 namespace Library.Infraestructure.Repositories;
 
-public class BookRepository : Repository<Book>, IBookRepository
+public class BookRepository(DataContext dbContext) : Repository<Book>(dbContext), IBookRepository
 {
-    public BookRepository(DataContext dbContext) : base(dbContext)
-    { }
-
     public async Task<List<Book>> GetBookOrderByName(Expression<Func<Book, bool>> filter = null!,
         bool paginate = true,
         int page = 1,
         int pageSize = 10,
-        string orderBy = "desc")
+        string orderBy = "desc",
+        CancellationToken? cancellation = null)
     {
         var query = _dbSet.AsQueryable();
 
@@ -33,6 +30,6 @@ public class BookRepository : Repository<Book>, IBookRepository
             query = query.Skip((page - 1) * pageSize)
                          .Take(pageSize);
 
-        return await query.ToListAsync();
+        return await query.ToListAsync(cancellation ?? CancellationToken.None);
     }
 }

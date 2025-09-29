@@ -11,8 +11,8 @@ public class BookUpdateHandler(IBookRepository bookRepository) : IRequestHandler
 
     public async Task<Unit> Handle(BookUpdateCommand command, CancellationToken cancellationToken)
     {
-        await Book.ExistsBookByName(_bookRepository, command.Name);
-        await Book.Update(command.Id.GuidParse(), command.Name, command.Author, command.Summary, _bookRepository);
+        await Book.ExistsBookByNameUpdate(_bookRepository, command.Id.GuidParse(), command.Name, cancellationToken);
+        await Book.Update(command.Id.GuidParse(), command.Name, command.Author, command.Summary, _bookRepository, cancellationToken);
         return Unit.Value;
     }
 }

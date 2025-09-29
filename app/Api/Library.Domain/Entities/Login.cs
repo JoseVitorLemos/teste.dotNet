@@ -72,9 +72,12 @@ public class Login : BaseEntity
             passwordHash);
     }
 
-    public static async Task<Login> Insert(Login login, IRepository<Login> repo)
+    public void SetUserName(string userName)
+        => UserName = userName;
+
+    public static async Task<Login> Insert(Login login, IRepository<Login> repo, CancellationToken cancellation)
     {
-        var entity = await repo.Insert(login);
+        var entity = await repo.Insert(login, cancellation);
         return entity;
     }
 }

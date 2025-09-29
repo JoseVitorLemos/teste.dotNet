@@ -54,9 +54,10 @@ public class Book : BaseEntity
         string name,
         string author,
         string summary,
-        IBookRepository repository)
+        IBookRepository repository,
+        CancellationToken cancellation)
     {
-        var bookEntity = await repository.GetById(id);
+        var bookEntity = await repository.GetById(id, cancellation);
 
         if (bookEntity is null)
             throw new ArgumentException(string.Format(EntityMessages.EMPTY, "Livro", $"id {id}"));
@@ -69,19 +70,28 @@ public class Book : BaseEntity
             bookEntity.Active,
             bookEntity.CreatedAt);
 
-        return await repository.Update(bookChanged);
+        return await repository.Update(bookChanged, cancellation);
     }
 
     public static async Task Delete(
         Guid id,
-        IBookRepository repository)
+        IBookRepository repository,
+        CancellationToken cancellation)
     {
-        await repository.Delete(id);
+        await repository.Delete(id, cancellation);
     }
 
-    public static async Task ExistsBookByName(IBookRepository repo, string name)
+    public static async Task ExistsBookByName(IBookRepository repo, string name, CancellationToken cancellation)
     {
-        bool validate = await repo.Count(x => x.Name.Equals(name)) > 0;
+        bool validate = await repo.Count(x => x.Name.Equals(name), cancellation) > 0;
+
+        if (validate)
+            throw new ArgumentException(string.Format(EntityMessages.HAS_VALUE, "Livro", $"nome ({name})"));
+    }
+
+    public static async Task ExistsBookByNameUpdate(IBookRepository repo, Guid id, string name, CancellationToken cancellation)
+    {
+        bool validate = await repo.Count(x => x.Name.Equals(name) && x.Id != id, cancellation) > 0;
 
         if (validate)
             throw new ArgumentException(string.Format(EntityMessages.HAS_VALUE, "Livro", $"nome ({name})"));

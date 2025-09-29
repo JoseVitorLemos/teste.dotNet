@@ -9,5 +9,6 @@ public interface IBookRepository : IRepository<Book>
         bool paginate = true,
         int page = 1,
         int pageSize = 10,
-        string orderBy = "desc");
+        string orderBy = "desc",
+        CancellationToken? cancellation = null);
 }
