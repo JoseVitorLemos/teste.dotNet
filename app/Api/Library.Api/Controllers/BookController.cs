@@ -36,11 +36,6 @@ public class BookController(IMediator mediator) : ControllerBase
     /// </returns>
     [HttpGet]
     [AllowAnonymous]
-    [SwaggerOperation(
-        Summary = "Lista todos os livros cadastrados na Livraria",
-        Description = "Retorna uma lista paginada de livros com suporte a filtros por nome e ordenação. " +
-                      "Parâmetros suportados: **Page**, **PageSize**, **OrderBy** e **Name**."
-    )]
     [ProducesResponseType(typeof(PagedResult<BooksGetAllResult>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetAll([FromQuery] BooksGetAllQuery query)

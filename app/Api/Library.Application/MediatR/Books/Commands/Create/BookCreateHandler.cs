@@ -10,8 +10,8 @@ public class BookCreateHandler(IBookRepository bookRepository) : IRequestHandler
 
     public async Task<BookCreateResult> Handle(BookCreateCommand command, CancellationToken cancellationToken)
     {
-        await Book.ExistsBookByName(_bookRepository, command.Name);
-        var entity = await _bookRepository.Insert(command);
+        await Book.ExistsBookByName(_bookRepository, command.Name, cancellationToken);
+        var entity = await _bookRepository.Insert(command, cancellationToken);
         return new(entity.Id);
     }
 }

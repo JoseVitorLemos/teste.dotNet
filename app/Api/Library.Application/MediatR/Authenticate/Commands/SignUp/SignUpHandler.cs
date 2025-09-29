@@ -16,16 +16,16 @@ public class SignUpHandler(IRepository<Login> loginRepository, ITokenService tok
     public async Task<SignUpResult> Handle(SignUpCommand command, CancellationToken cancellationToken)
     {
         string user = command.UserName.ToLower();
-        var findUser = await _loginRepository.FindOne(x => x.UserName.ToLower() == user);
+        var findUser = await _loginRepository.FindOne(x => x.UserName.ToLower() == user, cancellationToken);
         if(findUser != null)
             throw new ArgumentException(string.Format(EntityMessages.HAS_VALUE, nameof(Login), $"usuário ({command.UserName})"));
 
         string email = command.Email.ToLower();
-        var findEmail = await _loginRepository.FindOne(x => x.Email.ToLower() == email);
+        var findEmail = await _loginRepository.FindOne(x => x.Email.ToLower() == email, cancellationToken);
         if (findEmail != null)
             throw new ArgumentException(string.Format(EntityMessages.HAS_VALUE, nameof(Login), $"Email ({command.Email})"));
 
-        var login = await Login.Insert(command, _loginRepository);
+        var login = await Login.Insert(command, _loginRepository, cancellationToken);
         var loginModel = new LoginModel
         {
             UserName = login.UserName,

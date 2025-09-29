@@ -11,6 +11,10 @@ public class SignUpValidator : AbstractValidator<SignUpCommand>
             .NotEmpty()
             .WithMessage(FluentValidationMessages.NOT_EMPTY);
 
+        RuleFor(x => x.Email)
+            .NotEmpty()
+            .WithMessage(FluentValidationMessages.NOT_EMPTY);
+
         RuleFor(x => x.Password)
             .NotEmpty()
             .WithMessage(FluentValidationMessages.NOT_EMPTY);

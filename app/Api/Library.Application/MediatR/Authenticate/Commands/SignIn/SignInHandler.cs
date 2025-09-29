@@ -16,7 +16,7 @@ public class SignInHandler(IRepository<Login> loginRepository, ITokenService tok
     public async Task<SignInResult> Handle(SignInCommand command, CancellationToken cancellationToken)
     {
         string user = command.UserName.ToLower();
-        var login = await _loginRepository.FindOne(x => x.UserName.ToLower() == user || x.Email == user) ??
+        var login = await _loginRepository.FindOne(x => x.UserName.ToLower() == user || x.Email == user, cancellationToken) ??
             throw new ArgumentException(string.Format(EntityMessages.NOT_FOUND, nameof(Login), $"usuário ({command.UserName})"));
 
         bool validPassword = EncrypterExtensions.IsValidPassword(command.Password, login.PasswordHash);
