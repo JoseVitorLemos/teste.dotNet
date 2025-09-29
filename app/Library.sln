@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Domain", "Api\Libra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Application", "Api\Library.Application\Library.Application.csproj", "{E47820F0-6BC5-4FC0-96CC-5BFDCC444498}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Shared", "Api\Library.Tools\Library.Shared.csproj", "{495090CE-5074-4161-BD82-A3317915692D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Shared", "Api\Library.Shared\Library.Shared.csproj", "{495090CE-5074-4161-BD82-A3317915692D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Infraestructure", "Api\Library.Infraestructure\Library.Infraestructure.csproj", "{E7FAFB12-9D22-47AB-B7C0-BF42D02DEE2D}"
 EndProject
