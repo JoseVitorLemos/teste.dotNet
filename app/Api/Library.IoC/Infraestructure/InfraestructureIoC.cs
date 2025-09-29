@@ -18,7 +18,10 @@ public static class InfraestructureIoC
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddHttpContextAccessor();
         services.AddDataContext();
+#if !TEST
+        // Só roda em produção/release/dev, nunca em testes unitários
         AuditLogsConfiguration();
+#endif
         return services;
     }
 
