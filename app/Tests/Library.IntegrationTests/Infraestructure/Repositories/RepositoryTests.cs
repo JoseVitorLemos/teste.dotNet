@@ -1,20 +1,15 @@
-﻿using Audit.Core;
-using Audit.Core.Providers;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Library.Domain.Entities;
-using Library.Domain.Entities.Base;
 using Library.Infraestructure.AppDbContext;
 using Library.Infraestructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace Library.UnitTests.Infraestructure.Repositories;
+namespace Library.IntegrationTests.Infraestructure.Repositories;
 
 public class RepositoryTests
 {
     private Repository<Login> CreateRepository(out DataContext context)
     {
-        Configuration.DataProvider = new NullDataProvider();
-
         var options = new DbContextOptionsBuilder<DataContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;

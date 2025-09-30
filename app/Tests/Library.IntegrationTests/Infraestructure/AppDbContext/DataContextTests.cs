@@ -3,7 +3,7 @@ using Library.Domain.Entities;
 using Library.Infraestructure.AppDbContext;
 using Microsoft.EntityFrameworkCore;
 
-namespace Library.UnitTests.Infraestructure.AppDbContext;
+namespace Library.IntegrationTests.Infraestructure.AppDbContext;
 
 public class DataContextTests
 {
