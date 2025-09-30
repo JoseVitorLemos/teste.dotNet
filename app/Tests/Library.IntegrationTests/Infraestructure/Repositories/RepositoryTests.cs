@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using Audit.Core;
+using Audit.Core.Providers;
+using FluentAssertions;
 using Library.Domain.Entities;
 using Library.Infraestructure.AppDbContext;
 using Library.Infraestructure.Repositories;
@@ -10,6 +12,9 @@ public class RepositoryTests
 {
     private Repository<Login> CreateRepository(out DataContext context)
     {
+        Configuration.Setup().UseNullProvider();
+        Configuration.DataProvider = new NullDataProvider();
+
         var options = new DbContextOptionsBuilder<DataContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;

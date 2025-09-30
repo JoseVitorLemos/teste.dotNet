@@ -12,6 +12,9 @@ public class BookRepositoryTests
 {
     private BookRepository CreateRepository(out DataContext context)
     {
+        Configuration.Setup().UseNullProvider();
+        Configuration.DataProvider = new NullDataProvider();
+
         var options = new DbContextOptionsBuilder<DataContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString()) // banco isolado por teste
             .Options;

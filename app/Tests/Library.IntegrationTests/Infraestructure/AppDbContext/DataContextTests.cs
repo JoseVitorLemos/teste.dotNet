@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using Audit.Core;
+using Audit.Core.Providers;
+using FluentAssertions;
 using Library.Domain.Entities;
 using Library.Infraestructure.AppDbContext;
 using Microsoft.EntityFrameworkCore;
@@ -9,8 +11,11 @@ public class DataContextTests
 {
     private DataContext CreateInMemoryContext()
     {
+        Configuration.Setup().UseNullProvider();
+        Configuration.DataProvider = new NullDataProvider();
+
         var options = new DbContextOptionsBuilder<DataContext>()
-            .UseInMemoryDatabase(databaseName: "TestDb")
+            .UseInMemoryDatabase(Guid.NewGuid().ToString()) // banco isolado por teste
             .Options;
 
         return new DataContext(options);
